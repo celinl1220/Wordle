@@ -12,6 +12,7 @@ var guessList = ["aahed", "aalii", "aargh", "aarti", "abaca", "abaci", "abacs", 
 guessList = guessList.concat(wordList);
 
 var correctLetters = [];
+var freqLetters = {};
 var ansWord = wordList[Math.floor(Math.random() * wordList.length)];
 
 const keyboard = [
@@ -24,9 +25,26 @@ const pickWord = () => {
 
 	// pick random word
 	ansWord = wordList[Math.floor(Math.random() * wordList.length)];
+	// ansWord = "rebut"; // for testing
+	updateFreq();
+	console.log(freqLetters);
 	correctLetters = [];
 	console.log(ansWord);
 
+}
+
+const updateFreq = () => {
+	// reset letter frequency counts
+	freqLetters = {};
+	// update letter frequency counts
+	for (let i = 0; i < ansWord.length; i++) {
+		let letter = ansWord[i];
+		if (freqLetters[letter]) {
+			freqLetters[letter] += 1;
+		} else {
+			freqLetters[letter] = 1;
+		}
+	}
 }
 
 const initGame = () => {
@@ -75,7 +93,7 @@ const getGuess = () => {
 	for (let i = 0; i < cols; i++) {
 		curGuess += document.getElementById(`tile-${curRow}-${i}`).innerText;
 	}
-	console.log(curGuess);
+	console.log("guessed:", curGuess);
 	return curGuess;
 }
 
@@ -87,27 +105,48 @@ const updateTiles = (keyboardTile, guessTile, color) => {
 
 const checkGuess = () => {
 	var correctWord = true;
+	updateFreq();
+
+	// loop through each letter in guess
+	for (let i = 0; i < cols; i++) {
+		const checkTile = document.getElementById(`tile-${curRow}-${i}`);
+		const curLetter = checkTile.innerText;
+		const checkKeyboardTile = document.getElementById(curLetter);
+		console.log("letter checked:", curLetter);
+		if (curLetter === ansWord[i]) { // correct letter, correct position
+			console.log("green");
+			updateTiles(checkKeyboardTile, checkTile, "green");
+			correctLetters.push(curLetter);
+			freqLetters[curLetter] -= 1;
+		}
+		// keyboard tile must be green for rest of the game if already guessed correctly
+		// if (correctLetters.includes(curLetter)) { // if letter not guessed correctly yet
+		// 	checkKeyboardTile.style.backgroundColor = "green";
+		// }
+		console.log(freqLetters);
+	}
 
 	for (let i = 0; i < cols; i++) {
 		const checkTile = document.getElementById(`tile-${curRow}-${i}`);
 		const curLetter = checkTile.innerText;
 		const checkKeyboardTile = document.getElementById(curLetter);
-		console.log(curLetter);
-		if (curLetter === ansWord[i]) { // correct letter, correct position
-			updateTiles(checkKeyboardTile, checkTile, "green");
-			correctLetters.push(curLetter);
-		} else if (ansWord.includes(curLetter)) { // correct letter, wrong position
-			correctWord = false;
-			updateTiles(checkKeyboardTile, checkTile, "orange");
-		} else { // wrong letter, wrong position
-			correctWord = false;
-			updateTiles(checkKeyboardTile, checkTile, "grey");
+		console.log("letter checked:", curLetter);
+		if (checkTile.style.backgroundColor !== "green") { // if tile is not green yet
+			if (ansWord.includes(curLetter) && freqLetters[curLetter] !== 0) { // correct letter, wrong position, and not all cases of that letter have been found yet
+				console.log("orange");
+				correctWord = false;
+				updateTiles(checkKeyboardTile, checkTile, "orange");
+				freqLetters[curLetter] -= 1;
+			} else { // wrong letter, wrong position
+				console.log("grey");
+				correctWord = false;
+				updateTiles(checkKeyboardTile, checkTile, "grey");
+			}
 		}
-		// keyboard tile must be green for rest of the game if already guessed correctly
-		if (correctLetters.includes(curLetter)) { // if letter not guessed correctly yet
-			checkKeyboardTile.style.backgroundColor = "green";
-		}
+		console.log(freqLetters);
 	}
+
+	console.log(freqLetters);
 	return correctWord;
 }
 
