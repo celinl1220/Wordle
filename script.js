@@ -107,9 +107,9 @@ const checkGuess = () => {
 		const checkTile = document.getElementById(`tile-${curRow}-${i}`);
 		const curLetter = checkTile.innerText;
 		const checkKeyboardTile = document.getElementById(curLetter);
-		console.log("letter checked:", curLetter);
+		// console.log("letter checked:", curLetter);
 		if (curLetter === ansWord[i]) { // correct letter, correct position
-			console.log("green");
+			// console.log("green");
 			updateTiles(checkKeyboardTile, checkTile, "green");
 			correctLetters.push(curLetter);
 			freqLetters[curLetter] -= 1;
@@ -118,30 +118,30 @@ const checkGuess = () => {
 		// if (correctLetters.includes(curLetter)) { // if letter not guessed correctly yet
 		// 	checkKeyboardTile.style.backgroundColor = "green";
 		// }
-		console.log(freqLetters);
+		// console.log(freqLetters);
 	}
 
 	for (let i = 0; i < cols; i++) {
 		const checkTile = document.getElementById(`tile-${curRow}-${i}`);
 		const curLetter = checkTile.innerText;
 		const checkKeyboardTile = document.getElementById(curLetter);
-		console.log("letter checked:", curLetter);
+		// console.log("letter checked:", curLetter);
 		if (checkTile.style.backgroundColor !== "green") { // if tile is not green yet
 			if (ansWord.includes(curLetter) && freqLetters[curLetter] !== 0) { // correct letter, wrong position, and not all cases of that letter have been found yet
-				console.log("orange");
+				// console.log("orange");
 				correctWord = false;
 				updateTiles(checkKeyboardTile, checkTile, "orange");
 				freqLetters[curLetter] -= 1;
 			} else { // wrong letter, wrong position
-				console.log("grey");
+				// console.log("grey");
 				correctWord = false;
 				updateTiles(checkKeyboardTile, checkTile, "grey");
 			}
 		}
-		console.log(freqLetters);
+		// console.log(freqLetters);
 	}
 
-	console.log(freqLetters);
+	// console.log(freqLetters);
 	return correctWord;
 }
 
@@ -155,11 +155,42 @@ const showMessage = (msg, temp) => {
 	messageWrapper.textContent = `${msg}`;
 	messageWrapper.classList.remove("hidden");
 	messageWrapper.classList.add("visible");
+	messageWrapper.classList.add("bounce");
 	if (temp) {
 		setTimeout(() => {
 			messageWrapper.classList.remove("visible");
+			messageWrapper.classList.remove("bounce");
 			messageWrapper.classList.add("hidden");
 		}, 1000);
+	}
+}
+
+const shakeGuess = () => {
+	var curTileRow = document.getElementById(`guess-${curRow}`);
+	curTileRow.classList.add("shake");
+	setTimeout(() => {
+		curTileRow.classList.remove("shake");
+	}, 1200);
+}
+
+const growTile = (curTile) => {
+	console.log(curTile);
+	curTile.classList.add("grow");
+	setTimeout(() => {
+		curTile.classList.remove("grow");
+	}, 1200);
+}
+
+const waveGuess = (waveRow) => {
+	for (let i = 0; i < cols; i++) {
+		const curTile = document.getElementById(`tile-${waveRow}-${i}`);
+		curTile.classList.remove("grow");
+		setTimeout(() => {
+			curTile.classList.add("growBig");
+			setTimeout(() => {
+				curTile.classList.remove("growBig");
+			}, 1200);
+		}, 100*i);
 	}
 }
 
@@ -168,7 +199,7 @@ const keyPressed = (e) => {
 	const curKey = e.key.toLowerCase();
 	const keyboardTileElement = document.getElementById(curKey);
 	var curTile = document.getElementById(`tile-${curRow}-${curCol}`);
-	console.log(curKey);
+	// console.log(curKey);
 	if (keyboardTileElement !== null) { // if key is valid
 		if (curKey === "backspace") {
 			// if (last column AND last column is empty) OR (not first AND not last column)
@@ -183,6 +214,7 @@ const keyPressed = (e) => {
 			if (curCol === cols-1 && curTile.innerText !== "") { // if last column AND not empty
 				const guessWord = getGuess();
 				if (guessList.includes(guessWord)) { // if guessed word is a valid word
+					waveGuess(curRow);
 					const guessCorrect = checkGuess();
 					curRow += 1;
 					curCol = 0;
@@ -195,9 +227,11 @@ const keyPressed = (e) => {
 					} 
 				} else { // not a valid word
 					showMessage("not a valid word...", true);
+					shakeGuess();
 				}
 			}
 		} else { // key pressed is a letter
+			growTile(curTile);
 			curTile.innerText = curKey;
 			curTile.style.border = "2px solid black";
 			if (curCol < cols-1) { // if not the last column (letter)
