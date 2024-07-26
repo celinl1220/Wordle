@@ -1,5 +1,6 @@
 const tilesWrapper = document.querySelector(".tiles-wrapper");
 const keyboardWrapper = document.querySelector(".keyboard-wrapper");
+const messageWrapper = document.querySelector(".message-wrapper");
 
 var rows = 6;
 var cols = 5;
@@ -82,12 +83,6 @@ const initGame = () => {
 	}
 }
 
-// game over
-const gameOver = (msg) => {
-	console.log(msg);
-	document.removeEventListener("keyup", keyPressed); // remove event listener
-}
-
 const getGuess = () => {
 	let curGuess = "";
 	for (let i = 0; i < cols; i++) {
@@ -155,6 +150,19 @@ const clearTile = (tile) => {
 	tile.removeAttribute("style");
 }
 
+const showMessage = (msg, temp) => {
+	console.log(`message: ${msg}`);
+	messageWrapper.textContent = `${msg}`;
+	messageWrapper.classList.remove("hidden");
+	messageWrapper.classList.add("visible");
+	if (temp) {
+		setTimeout(() => {
+			messageWrapper.classList.remove("visible");
+			messageWrapper.classList.add("hidden");
+		}, 1000);
+	}
+}
+
 // when a key is pressed
 const keyPressed = (e) => {
 	const curKey = e.key.toLowerCase();
@@ -178,13 +186,15 @@ const keyPressed = (e) => {
 					const guessCorrect = checkGuess();
 					curRow += 1;
 					curCol = 0;
-					if (curRow === rows) { // if last guess entered
-						gameOver("Game Over"); // out of guesses => game over
-					} else if (guessCorrect) {
-						gameOver("You Win"); // user wins
-					}
+					if (guessCorrect) {
+						showMessage("you win!", false);
+						document.removeEventListener("keyup", keyPressed); // remove event listener
+					} else if (curRow === rows) { // if last guess entered
+						showMessage("game over!", false);
+						document.removeEventListener("keyup", keyPressed); // remove event listener
+					} 
 				} else { // not a valid word
-					console.log("not a valid word");
+					showMessage("not a valid word...", true);
 				}
 			}
 		} else { // key pressed is a letter

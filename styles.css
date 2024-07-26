@@ -2,6 +2,7 @@
 	--background-color: rgb(191, 209, 229);
 	--mainBackground-color: rgb(166, 189, 219);
 	--tileBackground-color: rgb(128, 166, 206);
+	--messageBackground-color: rgb(8, 96, 168);
 
 	--border-color: rgb(217, 229, 240);
 	--inputBorder-color: rgb(80, 133, 188);
@@ -30,7 +31,6 @@ body {
 	background: var(--background-color);
 	display: flex;
 	flex-direction: column;
-/*	justify-content: center;*/
 	align-items: center;
 }
 
@@ -41,6 +41,33 @@ h1 {
 
 	margin-top: 10px;
 	margin-bottom: 5px;
+}
+
+.visible {
+	visibility: visible;
+	opacity: 1;
+	transition: opacity 0.5s linear;
+}
+
+.hidden {
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0.5s linear, opacity 0.5s linear;
+}
+
+.message-wrapper {
+	padding: 5px;
+	position: absolute;
+	top: 50px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	font-size: 18px;
+	color: black;
+	background: var(--messageBackground-color);
+	border: 2px solid var(--border-color);
 }
 
 .tiles-wrapper {
