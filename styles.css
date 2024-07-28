@@ -55,9 +55,9 @@ h1 {
 
 @keyframes bounce {
     10% { transform:translateY(0%); }
-    30% { transform:translateY(-16%); }
+    30% { transform:translateY(-20%); }
     50% { transform:translateY(0%); }
-    60% { transform:translateY(-14%); }
+    60% { transform:translateY(-15%); }
     70% { transform:translateY(0); }
     80% { transform:translateY(-10%); }
     90% { transform:translateY(0); }
@@ -118,7 +118,7 @@ h1 {
 	align-items: center;
 
 	font-size: 18px;
-	color: black;
+	color: white;
 	background: var(--messageBackground-color);
 	border: 2px solid var(--border-color);
 }
