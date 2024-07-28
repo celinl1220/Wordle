@@ -169,6 +169,7 @@ const waveGuess = (waveRow) => {
 	for (let i = 0; i < cols; i++) {
 		const curTile = document.getElementById(`tile-${waveRow}-${i}`);
 		curTile.classList.remove("grow");
+		curTile.classList.remove("growBig");
 		setTimeout(() => {
 			curTile.classList.add("growBig");
 			setTimeout(() => {
@@ -198,12 +199,14 @@ const keyPressed = (e) => {
 			if (curCol === cols-1 && curTile.innerText !== "") { // if last column AND not empty
 				const guessWord = getGuess();
 				if (guessList.includes(guessWord)) { // if guessed word is a valid word
-					waveGuess(curRow);
 					const guessCorrect = checkGuess();
 					curRow += 1;
 					curCol = 0;
 					if (guessCorrect) {
 						showMessage("you win!", false);
+						for (let j = 0; j < curRow; j++) {
+							waveGuess(j);
+						}
 						document.removeEventListener("keyup", keyPressed); // remove event listener
 					} else if (curRow === rows) { // if last guess entered
 						showMessage("game over!", false);
@@ -211,7 +214,10 @@ const keyPressed = (e) => {
 							shakeGuess(j);
 						}
 						document.removeEventListener("keyup", keyPressed); // remove event listener
-					} 
+					} else {
+						waveGuess(curRow-1);
+					}
+					
 				} else { // not a valid word
 					showMessage("not a valid word...", true);
 					shakeGuess(curRow);
