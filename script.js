@@ -92,12 +92,6 @@ const getGuess = () => {
 	return curGuess;
 }
 
-const updateTiles = (keyboardTile, guessTile, color) => {
-	keyboardTile.style.backgroundColor = color;
-	guessTile.style.backgroundColor = color;
-	guessTile.style.color = "white";
-}
-
 const checkGuess = () => {
 	var correctWord = true;
 	updateFreq();
@@ -107,41 +101,31 @@ const checkGuess = () => {
 		const checkTile = document.getElementById(`tile-${curRow}-${i}`);
 		const curLetter = checkTile.innerText;
 		const checkKeyboardTile = document.getElementById(curLetter);
-		// console.log("letter checked:", curLetter);
 		if (curLetter === ansWord[i]) { // correct letter, correct position
-			// console.log("green");
-			updateTiles(checkKeyboardTile, checkTile, "green");
+			checkKeyboardTile.classList.add("green-tile");
+			checkTile.classList.add("green-tile");
 			correctLetters.push(curLetter);
 			freqLetters[curLetter] -= 1;
 		}
-		// keyboard tile must be green for rest of the game if already guessed correctly
-		// if (correctLetters.includes(curLetter)) { // if letter not guessed correctly yet
-		// 	checkKeyboardTile.style.backgroundColor = "green";
-		// }
-		// console.log(freqLetters);
 	}
 
 	for (let i = 0; i < cols; i++) {
 		const checkTile = document.getElementById(`tile-${curRow}-${i}`);
 		const curLetter = checkTile.innerText;
 		const checkKeyboardTile = document.getElementById(curLetter);
-		// console.log("letter checked:", curLetter);
-		if (checkTile.style.backgroundColor !== "green") { // if tile is not green yet
+		if (!checkTile.classList.contains("green-tile")) { // if tile is not green yet
 			if (ansWord.includes(curLetter) && freqLetters[curLetter] !== 0) { // correct letter, wrong position, and not all cases of that letter have been found yet
-				// console.log("orange");
 				correctWord = false;
-				updateTiles(checkKeyboardTile, checkTile, "orange");
+				checkKeyboardTile.classList.add("orange-tile");
+				checkTile.classList.add("orange-tile");
 				freqLetters[curLetter] -= 1;
 			} else { // wrong letter, wrong position
-				// console.log("grey");
 				correctWord = false;
-				updateTiles(checkKeyboardTile, checkTile, "grey");
+				checkKeyboardTile.classList.add("grey-tile");
+				checkTile.classList.add("grey-tile");
 			}
 		}
-		// console.log(freqLetters);
 	}
-
-	// console.log(freqLetters);
 	return correctWord;
 }
 

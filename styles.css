@@ -188,3 +188,18 @@ h1 {
 
 	margin: 3px;
 }
+
+.green-tile {
+	background: green;
+	color: white;
+}
+
+.orange-tile {
+	background: orange;
+	color: white;
+}
+
+.grey-tile {
+	background: grey;
+	color: white;
+}
