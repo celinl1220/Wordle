@@ -149,8 +149,8 @@ const showMessage = (msg, temp) => {
 	}
 }
 
-const shakeGuess = () => {
-	var curTileRow = document.getElementById(`guess-${curRow}`);
+const shakeGuess = (shakeRow) => {
+	var curTileRow = document.getElementById(`guess-${shakeRow}`);
 	curTileRow.classList.add("shake");
 	setTimeout(() => {
 		curTileRow.classList.remove("shake");
@@ -207,11 +207,14 @@ const keyPressed = (e) => {
 						document.removeEventListener("keyup", keyPressed); // remove event listener
 					} else if (curRow === rows) { // if last guess entered
 						showMessage("game over!", false);
+						for (let j = 0; j < curRow; j++) {
+							shakeGuess(j);
+						}
 						document.removeEventListener("keyup", keyPressed); // remove event listener
 					} 
 				} else { // not a valid word
 					showMessage("not a valid word...", true);
-					shakeGuess();
+					shakeGuess(curRow);
 				}
 			}
 		} else { // key pressed is a letter
